@@ -1,9 +1,9 @@
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { IconSymbol } from '../../components/ui/IconSymbol';
+import { Colors } from '../../constants/Colors';
+import { useColorScheme } from '../../hooks/useColorScheme';
 
 interface Sermon {
   id: string;
@@ -33,7 +33,7 @@ export default function SermonsScreen() {
       date: 'July 27, 2025',
       duration: '45 min',
       description: 'A powerful message about trusting God in uncertain times.',
-      image: require('@/assets/images/partial-react-logo.png'),
+      image: require('../../assets/images/partial-react-logo.png'),
       category: 'Sunday Service',
     },
     {
@@ -43,7 +43,7 @@ export default function SermonsScreen() {
       date: 'July 20, 2025',
       duration: '38 min',
       description: 'Understanding the importance of prayer in our daily lives.',
-      image: require('@/assets/images/partial-react-logo.png'),
+      image: require('../../assets/images/partial-react-logo.png'),
       category: 'Bible Study',
     },
     {
@@ -53,7 +53,7 @@ export default function SermonsScreen() {
       date: 'July 13, 2025',
       duration: '42 min',
       description: 'Discovering God\'s purpose for your life.',
-      image: require('@/assets/images/partial-react-logo.png'),
+      image: require('../../assets/images/partial-react-logo.png'),
       category: 'Sunday Service',
     },
     {
@@ -63,7 +63,7 @@ export default function SermonsScreen() {
       date: 'July 6, 2025',
       duration: '35 min',
       description: 'A special message for young believers.',
-      image: require('@/assets/images/partial-react-logo.png'),
+      image: require('../../assets/images/partial-react-logo.png'),
       category: 'Youth',
     },
   ];
@@ -172,111 +172,102 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    padding: 30,
-    paddingTop: 60,
-    alignItems: 'center',
+    padding: 20,
+    paddingTop: 50, // Account for status bar
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     color: 'white',
   },
   headerSubtitle: {
     fontSize: 16,
     color: 'white',
-    opacity: 0.8,
-    marginTop: 5,
+    opacity: 0.9,
+    marginTop: 4,
   },
   searchSection: {
-    padding: 20,
-    paddingBottom: 10,
+    padding: 16,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 15,
-    borderRadius: 12,
+    padding: 12,
+    borderRadius: 8,
     borderWidth: 1,
   },
   searchInput: {
     flex: 1,
-    marginLeft: 10,
     fontSize: 16,
+    marginLeft: 10,
+    padding: 0, // Remove default TextInput padding
   },
   categoriesContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 10,
+    paddingVertical: 8,
   },
   categories: {
     flexDirection: 'row',
-    gap: 10,
+    paddingHorizontal: 16,
   },
   categoryChip: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 16,
     borderWidth: 1,
+    marginRight: 8,
   },
   categoryText: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   sermonsList: {
-    flex: 1,
-    padding: 20,
+    padding: 16,
   },
   sermonCard: {
-    flexDirection: 'row',
     borderRadius: 12,
-    marginBottom: 15,
-    overflow: 'hidden',
     borderWidth: 1,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    marginBottom: 16,
+    overflow: 'hidden',
+    flexDirection: 'row',
   },
   sermonImage: {
-    width: 120,
-    height: 120,
+    width: 100,
+    height: 100,
+    borderTopLeftRadius: 12,
+    borderBottomLeftRadius: 12,
   },
   sermonContent: {
     flex: 1,
-    padding: 15,
+    padding: 12,
   },
   sermonHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 8,
+    alignItems: 'center',
   },
   sermonTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    flex: 1,
-    marginRight: 10,
+    fontWeight: '600',
   },
   playButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
   },
   sermonSpeaker: {
     fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 8,
+    marginTop: 4,
   },
   sermonDescription: {
-    fontSize: 14,
-    lineHeight: 20,
-    marginBottom: 10,
+    fontSize: 12,
+    marginTop: 4,
   },
   sermonMeta: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop: 8,
   },
   sermonDate: {
     fontSize: 12,
@@ -285,3 +276,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
+
+

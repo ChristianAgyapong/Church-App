@@ -129,7 +129,7 @@ export default function LandingScreen() {
             <Animated.View style={[styles.logoContainer, logoAnimatedStyle]}>
               <View style={styles.logoCircle}>
                 <Image
-                  source={require('@/assets/images/adaptive-icon.png')}
+                  source={require('../assets/images/adaptive-icon.png')}
                   style={styles.logoImage}
                   resizeMode="contain"
                 />

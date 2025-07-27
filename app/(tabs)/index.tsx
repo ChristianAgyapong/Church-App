@@ -1,9 +1,9 @@
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { IconSymbol } from '../../components/ui/IconSymbol';
+import { Colors } from '../../constants/Colors';
+import { useColorScheme } from '../../hooks/useColorScheme';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -58,7 +58,7 @@ export default function HomeScreen() {
           onPress={() => router.push('/sermons')}
         >
           <Image
-            source={require('@/assets/images/partial-react-logo.png')}
+            source={require('../../assets/images/partial-react-logo.png')}
             style={styles.sermonImage}
           />
           <View style={styles.sermonContent}>
