@@ -5,12 +5,14 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Dimensions, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, {
     useAnimatedStyle,
     useSharedValue,
     withTiming,
 } from 'react-native-reanimated';
+
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 export default function AuthScreen() {
   const colorScheme = useColorScheme();
@@ -338,81 +340,87 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   header: {
-    padding: 30,
-    paddingTop: 60,
+    padding: screenWidth * 0.05,
+    paddingTop: Platform.OS === 'ios' ? 60 : 40,
     alignItems: 'center',
     position: 'relative',
+    minHeight: screenHeight * 0.15,
   },
   backButton: {
     position: 'absolute',
     left: 20,
-    top: 60,
+    top: Platform.OS === 'ios' ? 60 : 40,
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: Math.min(28, screenWidth * 0.08),
     fontWeight: 'bold',
     color: 'white',
     marginBottom: 8,
+    textAlign: 'center',
   },
   headerSubtitle: {
-    fontSize: 16,
+    fontSize: Math.min(16, screenWidth * 0.04),
     color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'center',
+    paddingHorizontal: 20,
   },
   formContainer: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: Math.max(15, screenWidth * 0.04),
     paddingTop: 20,
+    minHeight: screenHeight * 0.7,
   },
   formCard: {
     borderRadius: 20,
-    padding: 25,
+    padding: Math.max(15, screenWidth * 0.05),
     elevation: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.2,
     shadowRadius: 10,
+    marginBottom: 30,
   },
   nameRow: {
-    flexDirection: 'row',
+    flexDirection: screenWidth < 400 ? 'column' : 'row',
     justifyContent: 'space-between',
   },
   inputContainer: {
-    marginBottom: 20,
+    marginBottom: screenHeight < 700 ? 15 : 20,
   },
   halfWidth: {
-    width: '48%',
+    width: screenWidth < 400 ? '100%' : '48%',
   },
   inputLabel: {
-    fontSize: 16,
+    fontSize: Math.min(16, screenWidth * 0.045),
     fontWeight: '600',
     marginBottom: 8,
   },
   textInput: {
     borderWidth: 1,
     borderRadius: 12,
-    padding: 15,
-    fontSize: 16,
+    padding: Math.max(12, screenWidth * 0.035),
+    fontSize: Math.min(16, screenWidth * 0.045),
+    minHeight: 50,
   },
   forgotPassword: {
     alignSelf: 'flex-end',
-    marginBottom: 20,
+    marginBottom: screenHeight < 700 ? 15 : 20,
   },
   forgotPasswordText: {
-    fontSize: 14,
+    fontSize: Math.min(14, screenWidth * 0.04),
     fontWeight: '600',
   },
   submitButton: {
-    marginBottom: 20,
+    marginBottom: screenHeight < 700 ? 15 : 20,
     borderRadius: 12,
     overflow: 'hidden',
   },
   submitGradient: {
-    paddingVertical: 16,
+    paddingVertical: Math.max(14, screenHeight * 0.02),
     alignItems: 'center',
   },
   submitButtonText: {
-    fontSize: 18,
+    fontSize: Math.min(18, screenWidth * 0.05),
     fontWeight: 'bold',
     color: 'white',
   },
@@ -427,7 +435,7 @@ const styles = StyleSheet.create({
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: screenHeight < 700 ? 15 : 20,
   },
   dividerLine: {
     flex: 1,
@@ -435,26 +443,28 @@ const styles = StyleSheet.create({
   },
   dividerText: {
     marginHorizontal: 15,
-    fontSize: 14,
+    fontSize: Math.min(14, screenWidth * 0.04),
   },
   socialButtons: {
-    flexDirection: 'row',
+    flexDirection: screenWidth < 400 ? 'column' : 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: screenHeight < 700 ? 15 : 20,
   },
   socialButton: {
-    flex: 1,
+    flex: screenWidth < 400 ? 0 : 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
+    paddingVertical: Math.max(10, screenHeight * 0.015),
     borderRadius: 8,
-    marginHorizontal: 5,
+    marginHorizontal: screenWidth < 400 ? 0 : 5,
+    marginVertical: screenWidth < 400 ? 5 : 0,
     borderWidth: 1,
+    minHeight: 45,
   },
   socialButtonText: {
     color: 'white',
-    fontSize: 14,
+    fontSize: Math.min(14, screenWidth * 0.04),
     fontWeight: '600',
     marginLeft: 8,
   },
@@ -462,13 +472,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 10,
   },
   toggleText: {
-    fontSize: 14,
+    fontSize: Math.min(14, screenWidth * 0.04),
     marginRight: 5,
+    textAlign: 'center',
   },
   toggleLink: {
-    fontSize: 14,
+    fontSize: Math.min(14, screenWidth * 0.04),
     fontWeight: '600',
   },
 });
