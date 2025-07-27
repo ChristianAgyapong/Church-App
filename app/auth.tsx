@@ -4,7 +4,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, {
     useAnimatedStyle,
     useSharedValue,
@@ -17,6 +17,7 @@ export default function AuthScreen() {
   const colors = Colors[colorScheme ?? 'light'];
 
   const [isSignUp, setIsSignUp] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -71,34 +72,54 @@ export default function AuthScreen() {
     return true;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validateForm()) return;
 
-    // Simulate authentication
-    Alert.alert(
-      'Success',
-      isSignUp ? 'Account created successfully!' : 'Welcome back!',
-      [
-        {
-          text: 'OK',
-          onPress: () => router.replace('/(tabs)'),
-        },
-      ]
-    );
+    setIsLoading(true);
+
+    // Simulate authentication process with loading
+    setTimeout(() => {
+      setIsLoading(false);
+      
+      // Show success message and navigate
+      Alert.alert(
+        'Success!',
+        isSignUp 
+          ? 'Welcome to GCCMA! Your account has been created successfully.' 
+          : 'Welcome back! Great to see you again.',
+        [
+          {
+            text: 'Continue',
+            onPress: () => {
+              // Navigate to home screen
+              router.replace('/(tabs)');
+            },
+          },
+        ]
+      );
+    }, 2000); // 2 second loading simulation
   };
 
-  const handleSocialAuth = (provider: string) => {
-    Alert.alert(
-      `${provider} Authentication`,
-      `Continue with ${provider}?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Continue',
-          onPress: () => router.replace('/(tabs)'),
-        },
-      ]
-    );
+  const handleSocialAuth = async (provider: string) => {
+    setIsLoading(true);
+
+    // Simulate social authentication
+    setTimeout(() => {
+      setIsLoading(false);
+      
+      Alert.alert(
+        'Success!',
+        `Welcome to GCCMA! You've successfully signed in with ${provider}.`,
+        [
+          {
+            text: 'Continue',
+            onPress: () => {
+              router.replace('/(tabs)');
+            },
+          },
+        ]
+      );
+    }, 1500);
   };
 
   return (
@@ -222,14 +243,27 @@ export default function AuthScreen() {
               )}
 
               {/* Submit Button */}
-              <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+              <TouchableOpacity 
+                style={[styles.submitButton, isLoading && styles.submitButtonDisabled]} 
+                onPress={handleSubmit}
+                disabled={isLoading}
+              >
                 <LinearGradient
-                  colors={['#27AE60', '#2ECC71']}
+                  colors={isLoading ? ['#95A5A6', '#BDC3C7'] : ['#27AE60', '#2ECC71']}
                   style={styles.submitGradient}
                 >
-                  <Text style={styles.submitButtonText}>
-                    {isSignUp ? 'Create Account' : 'Sign In'}
-                  </Text>
+                  {isLoading ? (
+                    <View style={styles.loadingContainer}>
+                      <ActivityIndicator color="white" size="small" />
+                      <Text style={[styles.submitButtonText, { marginLeft: 10 }]}>
+                        {isSignUp ? 'Creating Account...' : 'Signing In...'}
+                      </Text>
+                    </View>
+                  ) : (
+                    <Text style={styles.submitButtonText}>
+                      {isSignUp ? 'Create Account' : 'Sign In'}
+                    </Text>
+                  )}
                 </LinearGradient>
               </TouchableOpacity>
 
@@ -243,16 +277,26 @@ export default function AuthScreen() {
               {/* Social Authentication */}
               <View style={styles.socialButtons}>
                 <TouchableOpacity
-                  style={[styles.socialButton, { backgroundColor: '#4267B2', borderColor: colors.border }]}
+                  style={[
+                    styles.socialButton, 
+                    { backgroundColor: '#4267B2', borderColor: colors.border },
+                    isLoading && { opacity: 0.7 }
+                  ]}
                   onPress={() => handleSocialAuth('Facebook')}
+                  disabled={isLoading}
                 >
                   <IconSymbol name="house.fill" size={20} color="white" />
                   <Text style={styles.socialButtonText}>Facebook</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={[styles.socialButton, { backgroundColor: '#DB4437', borderColor: colors.border }]}
+                  style={[
+                    styles.socialButton, 
+                    { backgroundColor: '#DB4437', borderColor: colors.border },
+                    isLoading && { opacity: 0.7 }
+                  ]}
                   onPress={() => handleSocialAuth('Google')}
+                  disabled={isLoading}
                 >
                   <IconSymbol name="house.fill" size={20} color="white" />
                   <Text style={styles.socialButtonText}>Google</Text>
@@ -264,8 +308,11 @@ export default function AuthScreen() {
                 <Text style={[styles.toggleText, { color: colors.icon }]}>
                   {isSignUp ? 'Already have an account?' : "Don't have an account?"}
                 </Text>
-                <TouchableOpacity onPress={toggleAuthMode}>
-                  <Text style={[styles.toggleLink, { color: colors.tint }]}>
+                <TouchableOpacity onPress={toggleAuthMode} disabled={isLoading}>
+                  <Text style={[
+                    styles.toggleLink, 
+                    { color: isLoading ? colors.icon : colors.tint }
+                  ]}>
                     {isSignUp ? 'Sign In' : 'Sign Up'}
                   </Text>
                 </TouchableOpacity>
@@ -366,6 +413,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
+  },
+  submitButtonDisabled: {
+    opacity: 0.7,
+  },
+  loadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   divider: {
     flexDirection: 'row',
