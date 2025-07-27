@@ -1,0 +1,319 @@
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useEffect } from 'react';
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Animated, {
+    Easing,
+    useAnimatedStyle,
+    useSharedValue,
+    withRepeat,
+    withSequence,
+    withTiming
+} from 'react-native-reanimated';
+
+const { width, height } = Dimensions.get('window');
+
+export default function LandingScreen() {
+  const colorScheme = useColorScheme();
+  const router = useRouter();
+  const colors = Colors[colorScheme ?? 'light'];
+
+  // Animation values
+  const logoScale = useSharedValue(0);
+  const logoOpacity = useSharedValue(0);
+  const titleTranslateY = useSharedValue(50);
+  const titleOpacity = useSharedValue(0);
+  const subtitleTranslateY = useSharedValue(50);
+  const subtitleOpacity = useSharedValue(0);
+  const buttonTranslateY = useSharedValue(50);
+  const buttonOpacity = useSharedValue(0);
+  const glowOpacity = useSharedValue(0);
+
+  useEffect(() => {
+    // Sequence of animations
+    const animateSequence = () => {
+      // Logo animation
+      logoScale.value = withTiming(1, { duration: 800, easing: Easing.out(Easing.back(1.5)) });
+      logoOpacity.value = withTiming(1, { duration: 600 });
+
+      // Title animation (delayed)
+      setTimeout(() => {
+        titleTranslateY.value = withTiming(0, { duration: 600, easing: Easing.out(Easing.quad) });
+        titleOpacity.value = withTiming(1, { duration: 600 });
+      }, 400);
+
+      // Subtitle animation (delayed)
+      setTimeout(() => {
+        subtitleTranslateY.value = withTiming(0, { duration: 600, easing: Easing.out(Easing.quad) });
+        subtitleOpacity.value = withTiming(1, { duration: 600 });
+      }, 800);
+
+      // Button animation (delayed)
+      setTimeout(() => {
+        buttonTranslateY.value = withTiming(0, { duration: 600, easing: Easing.out(Easing.quad) });
+        buttonOpacity.value = withTiming(1, { duration: 600 });
+      }, 1200);
+
+      // Glow effect
+      setTimeout(() => {
+        glowOpacity.value = withRepeat(
+          withSequence(
+            withTiming(0.6, { duration: 2000 }),
+            withTiming(0.2, { duration: 2000 })
+          ),
+          -1,
+          true
+        );
+      }, 1600);
+    };
+
+    animateSequence();
+  }, []);
+
+  // Animated styles
+  const logoAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: logoScale.value }],
+    opacity: logoOpacity.value,
+  }));
+
+  const titleAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: titleTranslateY.value }],
+    opacity: titleOpacity.value,
+  }));
+
+  const subtitleAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: subtitleTranslateY.value }],
+    opacity: subtitleOpacity.value,
+  }));
+
+  const buttonAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: buttonTranslateY.value }],
+    opacity: buttonOpacity.value,
+  }));
+
+  const glowAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: glowOpacity.value,
+  }));
+
+  const navigateToAuth = () => {
+    router.push('/auth');
+  };
+
+  return (
+    <View style={styles.container}>
+      <LinearGradient
+        colors={['#2E86C1', '#3498DB', '#5DADE2']}
+        style={styles.gradient}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        {/* Background glow effect */}
+        <Animated.View style={[styles.glowBackground, glowAnimatedStyle]} />
+
+        {/* Content */}
+        <View style={styles.content}>
+          {/* Logo Section */}
+          <View style={styles.logoSection}>
+            <Animated.View style={[styles.logoContainer, logoAnimatedStyle]}>
+              <View style={styles.logoCircle}>
+                <Image
+                  source={require('@/assets/images/adaptive-icon.png')}
+                  style={styles.logoImage}
+                  resizeMode="contain"
+                />
+              </View>
+            </Animated.View>
+
+            {/* Title */}
+            <Animated.Text style={[styles.title, titleAnimatedStyle]}>
+              GCCMA
+            </Animated.Text>
+
+            {/* Subtitle */}
+            <Animated.Text style={[styles.subtitle, subtitleAnimatedStyle]}>
+              Growing in Christ, Changing the World
+            </Animated.Text>
+          </View>
+
+          {/* Welcome Message */}
+          <Animated.View style={[styles.welcomeSection, buttonAnimatedStyle]}>
+            <Text style={styles.welcomeTitle}>Welcome to Our Community</Text>
+            <Text style={styles.welcomeText}>
+              Join us in worship, fellowship, and serving God together as we grow in faith and love.
+            </Text>
+          </Animated.View>
+
+          {/* Action Buttons */}
+          <Animated.View style={[styles.buttonSection, buttonAnimatedStyle]}>
+            <TouchableOpacity style={styles.primaryButton} onPress={navigateToAuth}>
+              <LinearGradient
+                colors={['#27AE60', '#2ECC71']}
+                style={styles.buttonGradient}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+              >
+                <Text style={styles.primaryButtonText}>Get Started</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.secondaryButton}
+              onPress={() => router.push('/(tabs)')}
+            >
+              <Text style={styles.secondaryButtonText}>Continue as Guest</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </View>
+
+        {/* Floating elements for visual appeal */}
+        <Animated.View style={[styles.floatingElement, styles.element1, glowAnimatedStyle]} />
+        <Animated.View style={[styles.floatingElement, styles.element2, glowAnimatedStyle]} />
+        <Animated.View style={[styles.floatingElement, styles.element3, glowAnimatedStyle]} />
+      </LinearGradient>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  gradient: {
+    flex: 1,
+  },
+  glowBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 30,
+    paddingTop: height * 0.1,
+    paddingBottom: 50,
+  },
+  logoSection: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  logoContainer: {
+    marginBottom: 30,
+  },
+  logoCircle: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  logoImage: {
+    width: 80,
+    height: 80,
+    tintColor: 'white',
+  },
+  title: {
+    fontSize: 42,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    marginBottom: 15,
+    letterSpacing: 2,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: 'rgba(255, 255, 255, 0.9)',
+    textAlign: 'center',
+    lineHeight: 24,
+    fontWeight: '300',
+  },
+  welcomeSection: {
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 40,
+  },
+  welcomeTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: 'white',
+    textAlign: 'center',
+    marginBottom: 15,
+  },
+  welcomeText: {
+    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.8)',
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  buttonSection: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  primaryButton: {
+    width: '100%',
+    marginBottom: 15,
+    borderRadius: 25,
+    overflow: 'hidden',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  buttonGradient: {
+    paddingVertical: 18,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+  },
+  primaryButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  secondaryButton: {
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 25,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  secondaryButtonText: {
+    fontSize: 16,
+    color: 'white',
+    fontWeight: '600',
+  },
+  floatingElement: {
+    position: 'absolute',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 50,
+  },
+  element1: {
+    width: 80,
+    height: 80,
+    top: '15%',
+    left: '10%',
+  },
+  element2: {
+    width: 60,
+    height: 60,
+    top: '25%',
+    right: '15%',
+  },
+  element3: {
+    width: 40,
+    height: 40,
+    bottom: '30%',
+    left: '20%',
+  },
+});
