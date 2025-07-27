@@ -81,22 +81,8 @@ export default function AuthScreen() {
     setTimeout(() => {
       setIsLoading(false);
       
-      // Show success message and navigate
-      Alert.alert(
-        'Success!',
-        isSignUp 
-          ? 'Welcome to GCCMA! Your account has been created successfully.' 
-          : 'Welcome back! Great to see you again.',
-        [
-          {
-            text: 'Continue',
-            onPress: () => {
-              // Navigate to home screen
-              router.replace('/(tabs)');
-            },
-          },
-        ]
-      );
+      // Navigate directly to home screen
+      router.replace('/(tabs)');
     }, 2000); // 2 second loading simulation
   };
 
@@ -107,18 +93,8 @@ export default function AuthScreen() {
     setTimeout(() => {
       setIsLoading(false);
       
-      Alert.alert(
-        'Success!',
-        `Welcome to GCCMA! You've successfully signed in with ${provider}.`,
-        [
-          {
-            text: 'Continue',
-            onPress: () => {
-              router.replace('/(tabs)');
-            },
-          },
-        ]
-      );
+      // Navigate directly to home screen
+      router.replace('/(tabs)');
     }, 1500);
   };
 
