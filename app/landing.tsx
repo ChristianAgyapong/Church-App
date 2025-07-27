@@ -1,4 +1,5 @@
 import { Colors } from '@/constants/Colors';
+import { useAuth } from '@/hooks/useAuth';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -19,6 +20,7 @@ export default function LandingScreen() {
   const colorScheme = useColorScheme();
   const router = useRouter();
   const colors = Colors[colorScheme ?? 'light'];
+  const { isAuthenticated, isLoading } = useAuth();
 
   // Animation values
   const logoScale = useSharedValue(0);
@@ -32,6 +34,12 @@ export default function LandingScreen() {
   const glowOpacity = useSharedValue(0);
 
   useEffect(() => {
+    // Check if user is already authenticated
+    if (!isLoading && isAuthenticated) {
+      router.replace('/(tabs)');
+      return;
+    }
+
     // Sequence of animations
     const animateSequence = () => {
       // Logo animation
@@ -69,8 +77,10 @@ export default function LandingScreen() {
       }, 1600);
     };
 
-    animateSequence();
-  }, []);
+    if (!isLoading && !isAuthenticated) {
+      animateSequence();
+    }
+  }, [isLoading, isAuthenticated]);
 
   // Animated styles
   const logoAnimatedStyle = useAnimatedStyle(() => ({

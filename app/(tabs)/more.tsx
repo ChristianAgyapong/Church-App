@@ -1,5 +1,6 @@
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Colors } from '@/constants/Colors';
+import { useAuth } from '@/hooks/useAuth';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -9,6 +10,7 @@ export default function MoreScreen() {
   const colorScheme = useColorScheme();
   const router = useRouter();
   const colors = Colors[colorScheme ?? 'light'];
+  const { user, logout } = useAuth();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [darkModeEnabled, setDarkModeEnabled] = useState(colorScheme === 'dark');
 
@@ -141,6 +143,25 @@ export default function MoreScreen() {
     );
   };
 
+  const handleLogout = () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout from your account?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Logout',
+          style: 'destructive',
+          onPress: async () => {
+            await logout();
+            // Navigate back to landing page
+            router.replace('/landing');
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
@@ -150,6 +171,31 @@ export default function MoreScreen() {
       </View>
 
       <ScrollView style={styles.content}>
+        {/* User Profile Section */}
+        <View style={styles.section}>
+          <View style={[styles.profileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={[styles.profileAvatar, { backgroundColor: colors.primary }]}>
+              <IconSymbol name="person.fill" size={30} color="white" />
+            </View>
+            <View style={styles.profileInfo}>
+              <Text style={[styles.profileName, { color: colors.text }]}>
+                {user ? `${user.firstName} ${user.lastName}` : 'Guest User'}
+              </Text>
+              <Text style={[styles.profileEmail, { color: colors.icon }]}>
+                {user?.email || 'guest@gccma.org'}
+              </Text>
+              <Text style={[styles.profileMember, { color: colors.icon }]}>
+                Member since {user?.memberSince || '2025'}
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={[styles.logoutButton, { backgroundColor: '#E74C3C' }]}
+              onPress={handleLogout}
+            >
+              <IconSymbol name="paperplane.fill" size={16} color="white" />
+            </TouchableOpacity>
+          </View>
+        </View>
         {/* Quick Actions */}
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>Quick Actions</Text>
@@ -284,6 +330,22 @@ export default function MoreScreen() {
               <Text style={[styles.menuTitle, { color: colors.text }]}>Rate App</Text>
               <Text style={[styles.menuSubtitle, { color: colors.icon }]}>
                 Rate us in the app store
+              </Text>
+            </View>
+            <IconSymbol name="chevron.right" size={20} color={colors.icon} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.menuItem, { backgroundColor: colors.card, borderColor: colors.border }]}
+            onPress={handleLogout}
+          >
+            <View style={[styles.menuIcon, { backgroundColor: '#E74C3C' }]}>
+              <IconSymbol name="paperplane.fill" size={20} color="white" />
+            </View>
+            <View style={styles.menuContent}>
+              <Text style={[styles.menuTitle, { color: colors.text }]}>Logout</Text>
+              <Text style={[styles.menuSubtitle, { color: colors.icon }]}>
+                Sign out of your account
               </Text>
             </View>
             <IconSymbol name="chevron.right" size={20} color={colors.icon} />
@@ -441,5 +503,43 @@ const styles = StyleSheet.create({
   },
   versionSubtext: {
     fontSize: 12,
+  },
+  profileCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    borderRadius: 16,
+    borderWidth: 1,
+    marginBottom: 10,
+  },
+  profileAvatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  profileInfo: {
+    flex: 1,
+  },
+  profileName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  profileEmail: {
+    fontSize: 14,
+    marginBottom: 2,
+  },
+  profileMember: {
+    fontSize: 12,
+  },
+  logoutButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

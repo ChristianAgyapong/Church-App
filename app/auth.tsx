@@ -1,5 +1,6 @@
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Colors } from '@/constants/Colors';
+import { useAuth } from '@/hooks/useAuth';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -15,6 +16,7 @@ export default function AuthScreen() {
   const colorScheme = useColorScheme();
   const router = useRouter();
   const colors = Colors[colorScheme ?? 'light'];
+  const { login } = useAuth();
 
   const [isSignUp, setIsSignUp] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -78,7 +80,19 @@ export default function AuthScreen() {
     setIsLoading(true);
 
     // Simulate authentication process with loading
-    setTimeout(() => {
+    setTimeout(async () => {
+      // Create user data
+      const userData = {
+        id: '1',
+        firstName: formData.firstName || 'John',
+        lastName: formData.lastName || 'Doe',
+        email: formData.email,
+        memberSince: '2025',
+      };
+
+      // Save user data
+      await login(userData);
+      
       setIsLoading(false);
       
       // Navigate directly to home screen
@@ -90,7 +104,19 @@ export default function AuthScreen() {
     setIsLoading(true);
 
     // Simulate social authentication
-    setTimeout(() => {
+    setTimeout(async () => {
+      // Create user data for social login
+      const userData = {
+        id: '1',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: `john.doe@${provider.toLowerCase()}.com`,
+        memberSince: '2025',
+      };
+
+      // Save user data
+      await login(userData);
+      
       setIsLoading(false);
       
       // Navigate directly to home screen
